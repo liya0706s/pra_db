@@ -36,3 +36,4 @@ class DB
         return $this->math('sum',$col, $where,)
     }
 }
+`
