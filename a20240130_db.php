@@ -105,6 +105,16 @@ class DB
         // 如果 $id 是陣列
         if(is_array($id)){
             // 執行內部方法a2s
+            $tmp=$this->a2s($id);
+
+            // 拼接sql語句
+            $sql .= " where " . join (" && ",$tmp);
+        }
+        // 如果 $id 是數字
+        else if (is_numeric($id)){
+
+            // 拼接sql語句
+            $sql .= " where `id`"
         }
     }
 
