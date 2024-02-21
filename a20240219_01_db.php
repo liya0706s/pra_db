@@ -3,7 +3,7 @@ date_default_timezone_set("Asia/Taipei");
 session_start();
 class DB
 {
-    protected $dsn = "mysql:host=localhot;charset:utf8;dbname=db09";
+    protected $dsn = "mysql:host=localhost;charset=utf8;dbname=db09";
     protected $pdo;
     protected $table;
 
@@ -122,7 +122,7 @@ class DB
             $sql = "insert into `$this->table` ";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
             $vals = "('" . join("','", $array) . "')";
-            $sql = $sql . $cols . " value " . $vals;
+            $sql = $sql . $cols . " values " . $vals;
         }
         return $this->pdo->exec($sql);
     }
@@ -139,3 +139,5 @@ function dd($array)
 function to($url){
     header("location:$url");
 }
+
+$Total = new DB ('total');
