@@ -28,15 +28,20 @@ class DB
 
     private function sql_all($sql, $array, $other)
     {
+        // 判斷資料表是否存在且不為空
         if (isset($this->table) && !empty($this->table)) {
+            // 判斷是不是陣列
             if (is_array($array)) {
+                // 是陣列的話且不是空的
                 if (!empty($array)) {
                     $tmp = $this->a2s($array);
                     $sql .= " where " . join(" && ", $tmp);
                 }
             } else {
+            // 不是陣列
                 $sql .= " $array";
             }
+            // 不是陣列是其他的
             $sql .= $other;
             return $sql;
         }
@@ -46,36 +51,36 @@ class DB
     {
         $sql = "select * from `$this->table` ";
         $sql = $this->sql_all($sql, $where, $other);
-        return  $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     function count($where = '', $other = '')
     {
         $sql = "select count(*) from `$this->table` ";
         $sql = $this->sql_all($sql, $where, $other);
-        return  $this->pdo->query($sql)->fetchColumn();
+        return $this->pdo->query($sql)->fetchColumn();
     }
 
     private function math($math, $col, $array = '', $other = '')
     {
-        $sql = "select $math(`$col`)  from `$this->table` ";
+        $sql = "select $math(`$col`) from `$this->table` ";
         $sql = $this->sql_all($sql, $array, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
 
     function sum($col = '', $where = '', $other = '')
     {
-        return  $this->math('sum', $col, $where, $other);
+        return $this->math('sum', $col, $where, $other);
     }
 
     function max($col, $where = '', $other = '')
     {
-        return  $this->math('max', $col, $where, $other);
+        return $this->math('max', $col, $where, $other);
     }
 
     function min($col, $where = '', $other = '')
     {
-        return  $this->math('min', $col, $where, $other);
+        return $this->math('min', $col, $where, $other);
     }
 
     function find($id)

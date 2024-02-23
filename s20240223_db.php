@@ -4,7 +4,7 @@ session_start();
 
 class DB
 {
-    protected $dsn = "mysql:host=localhost;charset=uft8;dbname=web12";
+    protected $dsn = "mysql:host=localhost;charset=utf8;dbname=web12";
     protected $pdo;
     protected $table;
 
@@ -22,10 +22,11 @@ class DB
         foreach ($array as $col => $value) {
             $tmp[] = "`$col`='$value'";
         }
+        return $tmp;
     }
     private function sql_all($sql, $array, $other)
     {
-        if (isset($this->table) && (!empty($this->table))) {
+        if (isset($this->table) && !empty($this->table)) {
             if (is_array($array)) {
                 if (!empty($array)) {
                     $tmp = $this->a2s($array);
@@ -73,24 +74,24 @@ class DB
 
     function find($id)
     {
-        $sql = "select * form `$this->table` ";
+        $sql = "select * from `$this->table` ";
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= " where " . join(" && ", $tmp);
         } else if (is_numeric($id)) {
             $sql .= " where `id`='$id'";
         }
-        $row=$this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+        $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
     }
 
     function del($id)
     {
-        $sql="delete from `$this->table` where ";
-        if(is_array($id)){
-            $tmp=$this->a2s($id);
-            $sql.=join(" && ", $tmp);
-        }else if(is_numeric($id)){
+        $sql = "delete from `$this->table` where ";
+        if (is_array($id)) {
+            $tmp = $this->a2s($id);
+            $sql .= join(" && ", $tmp);
+        } else if (is_numeric($id)) {
             $sql .= " `id`='$id'";
         }
         return $this->pdo->exec($sql);
@@ -98,18 +99,18 @@ class DB
 
     function save($array)
     {
-        if(isset($array['id'])){
-            $sql="update `$this->table` set ";
-            if(!empty($array)){
-                $tmp=$this->a2s($array);
+        if (isset($array['id'])) {
+            $sql = "update `$this->table` set ";
+            if (!empty($array)) {
+                $tmp = $this->a2s($array);
             }
-            $sql.=join(",",$tmp);
-            $sql.=" where `id`='{$array['id']}'";
-        }else{
-            $sql= "insert into `$this->table` ";
-            $cols="(`".join("`,`", array_keys($array)). "`)";
-            $vals="('".join("','", $array). "')";
-            $sql=$sql.$cols. " values ".$vals;
+            $sql .= join(",", $tmp);
+            $sql .= " where `id`='{$array['id']}'";
+        } else {
+            $sql = "insert into `$this->table` ";
+            $cols = "(`" . join("`,`", array_keys($array)) . "`)";
+            $vals = "('" . join("','", $array) . "')";
+            $sql = $sql . $cols . " values " . $vals;
         }
         return $this->pdo->exec($sql);
     }
@@ -127,15 +128,15 @@ function to($url)
     header("location:$url");
 }
 
-$Total=new DB('total');
+$Total = new DB('total');
 
-if(!isset($_SESSION['visited'])){
-    if($Total->count(['date'=>date("Y-m-d")])>0){
-        $total=$Total->find(['date'=>date("Y-m-d")]);
+if (!isset($_SESSION['visited'])) {
+    if ($Total->count(['date' => date("Y-m-d")]) > 0) {
+        $total = $Total->find(['date' => date("Y-m-d")]);
         $total['total']++;
         $Total->save($total);
-    }else{
-        $Total->save(['total'=>1,'data'=>date("Y-m-d")]);
+    } else {
+        $Total->save(['total' => 1, 'date' => date("Y-m-d")]);
     }
-    $_SESSION['visited']=1;
+    $_SESSION['visited'] = 1;
 }
