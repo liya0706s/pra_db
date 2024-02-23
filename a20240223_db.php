@@ -27,24 +27,34 @@ class DB
     }
     private function sql_all($sql, $array, $other)
     {
-       if(isset($this->table) && !empty($this->table)){
-        if(is_array($array)){
-            if(!empty($array)){
-                $tmp=$this->a2s($array);
-                $sql .= " where ".join(" && ", $tmp);
+        if (isset($this->table) && !empty($this->table)) {
+            if (is_array($array)) {
+                if (!empty($array)) {
+                    $tmp = $this->a2s($array);
+                    $sql .= " where " . join(" && ", $tmp);
+                }
+            } else {
+                $sql .= " $array";
             }
-        }else{
-            $sql .= " $array";
+            $sql .= $other;
+            return $sql;
         }
-        $sql .=$other;
-        return $sql;
-       } 
+    }
+
+    function all($where = '', $other = '')
+    {
+        $sql="select * from `$this->table` ";
+        $sql=$this->sql_all($sql,$where,$other);
+    }
+    
+    function count($where = '', $other = '')
+    {
     }
 
     private function math($math, $col, $array = '', $other = '')
     {
-        $sql="select $math(`$col`) from `$this->table` ";
-        $sql=$this->sql_all($sql,$array,$other);
+        $sql = "select $math(`$col`) from `$this->table` ";
+        $sql = $this->sql_all($sql, $array, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
     function sum($col = '', $where = '', $other = '')
@@ -53,25 +63,22 @@ class DB
     }
     function max($col, $where, $other)
     {
-         
+        return $this->math('max', $col, $where, $other);
     }
     function min($col, $where, $other)
     {
-
-        function find($id)
-        {
-        }
-        function del($id)
-        {
-        }
-        function save($array)
-        {
-        }
-        function all($where = '', $other = '')
-        {
-        }
-        function count($where = '', $other = '')
-        {
-        }
+        return $this->math('min', $col,$where,$other);
     }
+
+    function find($id)
+    {
+
+    }
+    function del($id)
+    {
+    }
+    function save($array)
+    {
+    }
+    
 }
