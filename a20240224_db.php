@@ -41,6 +41,7 @@ class DB
             $sql .= $other;
             return $sql;
         }
+    }
         function all($where = '', $other = '')
     {
         $sql = "select * from `$this->table` ";
@@ -52,7 +53,7 @@ class DB
     {
         $sql = "select count(*) from `$this->table` ";
         $sql = $this->sql_all($sql, $where, $other);
-        return $this->pdo->query($sql)->fetchColumn(PDO::FETCH_ASSOC);
+        return $this->pdo->query($sql)->fetchColumn();
     }
 
     private function math($math, $col, $array = '', $other = '')
@@ -113,6 +114,7 @@ class DB
             $sql = "insert into `$this->table` ";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
             $vals = "('" . join("','", $array) . "')";
+            $sql = $sql . $cols . " values " . $vals;
         }
         return $this->pdo->exec($sql);
     }
