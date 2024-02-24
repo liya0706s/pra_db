@@ -41,6 +41,18 @@ class DB
             $sql .= $other;
             return $sql;
         }
+        function all($where = '', $other = '')
+    {
+        $sql = "select * from `$this->table` ";
+        $sql = $this->sql_all($sql, $where, $other);
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function count($where = '', $other = '')
+    {
+        $sql = "select count(*) from `$this->table` ";
+        $sql = $this->sql_all($sql, $where, $other);
+        return $this->pdo->query($sql)->fetchColumn(PDO::FETCH_ASSOC);
     }
 
     private function math($math, $col, $array = '', $other = '')
@@ -52,14 +64,16 @@ class DB
 
     function sum($col = '', $where = '', $other = '')
     {
+        return $this->math('sum', $col, $where, $other);
     }
     function max($col, $where = '', $other = '')
     {
+        return $this->math('max', $col, $where, $other);
     }
     function min($col, $where = '', $other = '')
     {
+        return $this->math('min', $col, $where, $other);
     }
-    
 
     function find($id)
     {
@@ -86,15 +100,32 @@ class DB
         return $this->pdo->exec($sql);
     }
 
-    
+    function save($array)
+    {
+        if (isset($array['id'])) {
+            $sql = "update `$this->table` set ";
+            if (!empty($array)) {
+                $tmp = $this->a2s($array);
+            }
+            $sql .= join(",", $tmp);
+            $sql .= " where `id`='{$array['id']}'";
+        } else {
+            $sql = "insert into `$this->table` ";
+            $cols = "(`" . join("`,`", array_keys($array)) . "`)";
+            $vals = "('" . join("','", $array) . "')";
+        }
+        return $this->pdo->exec($sql);
+    }
+}
 
-    function all($where = '', $other = '')
-    {
-    }
-    function count($where = '', $other = '')
-    {
-    }
-    function save($sql, $where = '', $other = '')
-    {
-    }
+function dd($array)
+{
+    echo "<pre>";
+    print_r($array);
+    echo "</pre>";
+}
+
+function to($url)
+{
+    header("location:$url");
 }
