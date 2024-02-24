@@ -43,12 +43,16 @@ class DB
 
     function all($where = '', $other = '')
     {
-        $sql="select * from `$this->table` ";
-        $sql=$this->sql_all($sql,$where,$other);
+        $sql = "select * from `$this->table` ";
+        $sql = $this->sql_all($sql, $where, $other);
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     function count($where = '', $other = '')
     {
+        $sql = "select count(*) from `$this->table` ";
+        $sql = $this->sql_all($sql, $where, $other);
+        return $this->pdo->query($sql)->fetchColumn(PDO::FETCH_ASSOC);
     }
 
     private function math($math, $col, $array = '', $other = '')
@@ -67,18 +71,26 @@ class DB
     }
     function min($col, $where, $other)
     {
-        return $this->math('min', $col,$where,$other);
+        return $this->math('min', $col, $where, $other);
     }
 
     function find($id)
     {
-
+        $tmp = "select * from `$this->table` ";
+        if (is_array($id)) {
+            $tmp = $this->a2s($id);
+            $sql .= " where " . join(" && ", $tmp);
+        } else if (is_numeric($id)) {
+            $sql .= " where `id`='$id'";
+        }
+        $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+        return $row;
     }
     function del($id)
     {
+        
     }
     function save($array)
     {
     }
-    
 }
