@@ -15,7 +15,7 @@ class DB
 
     function q($sql)
     {
-        return $this->pdo->query($sql)->fecthAll(PDO::FETCH_ASSOC);
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private function a2s($array)
@@ -28,7 +28,7 @@ class DB
 
     private function sql_all($sql, $array, $other)
     {
-        if (isset($this->table) && (!empty($this->table))) {
+        if (isset($this->table) && !empty($this->table)) {
             if (is_array($array)) {
                 if (!empty($array)) {
                     $tmp = $this->a2s($array);
@@ -51,7 +51,7 @@ class DB
 
     function count($where = '', $other = '')
     {
-        $sql = "select count(*) `$this->table` ";
+        $sql = "select count(*) from `$this->table` ";
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
@@ -92,7 +92,7 @@ class DB
         $sql = "delete from `$this->table` where ";
         if (is_array($id)) {
             $tmp = $this->a2s($id);
-            $sql .= " where " . join(" && ", $tmp);
+            $sql .= join(" && ", $tmp);
         } else if (is_numeric($id)) {
             $sql .= " `id`='$id'";
         }
@@ -132,7 +132,7 @@ function to($url)
 
 $Total = new DB('total');
 
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['visited'])) {
     if ($Total->count(['date' => date("Y-m-d")]) > 0) {
         $total = $Total->find(['date' => date("Y-m-d")]);
         $total['total']++;
