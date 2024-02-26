@@ -86,6 +86,7 @@ class DB
             $sql .= " where `id`='$id'";
         }
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+        return $row;
     }
     function del($id)
     {
