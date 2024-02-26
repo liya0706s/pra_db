@@ -45,7 +45,7 @@ class DB
             $sql .= $other;
             return $sql;
         }
-    }    
+    }
 
     function all($where = '', $other = '')
     {
@@ -162,17 +162,17 @@ if (!isset($_SESSION['visited'])) {
 }
 
 // 測試dd方法如下:
-$Total=new DB('total');
-$t_q=$Total->q("select * from total");
-$t_all=$Total->all();
-$t_find=$Total->find(5);
-$t_del=$Total->del(2);
-$t_save=$Total->save(['total'=>20,'date'=>date('Y-m-d')]);
-$t_update=$Total->save(['id'=>3 ,'total'=>20]);
-$t_sum=$Total->sum('total');
-$t_max=$Total->max('total');
-$t_min=$Total->min('total');
-$t_count=$Total->count();
+$Total = new DB('total');
+$t_q = $Total->q("select * from total");
+$t_all = $Total->all();
+$t_find = $Total->find(5);
+$t_del = $Total->del(2);
+$t_save = $Total->save(['total' => 20, 'date' => date('Y-m-d')]);
+$t_update = $Total->save(['id' => 3, 'total' => 20]);
+$t_sum = $Total->sum('total');
+$t_max = $Total->max('total');
+$t_min = $Total->min('total');
+$t_count = $Total->count();
 
 dd($t_q);
 dd($t_all);
