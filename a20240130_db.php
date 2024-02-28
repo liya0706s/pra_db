@@ -1,11 +1,7 @@
 <?php
-// 時區設定
 date_default_timezone_set("Asia/Taipei");
-
-// 啟用session
 session_start();
 
-// 宣告類別
 class DB
 {
 
@@ -15,7 +11,7 @@ class DB
      * $pdo PDO的物件變數
      */
 
-    protected $dsn = 'mysql:host=localhost;charset=utf8;dbname=web09';
+    protected $dsn = 'mysql:host=localhost;charset=utf8;dbname=db09';
     protected $table;
     protected $pdo;
 
@@ -24,98 +20,142 @@ class DB
      * 建構式為物件被實例化(new DB)時會先執行的方法
      */
 
-    function __construct($table)
+    public function __construct($table)
     {
-        // 將物件內部的$table值設為帶入的$table
         $this->table = $table;
-
-        // 將物件內部的$pdo值設為PDO建立的資料庫連線物件
         $this->pdo = new PDO($this->dsn, 'root', '');
     }
 
-    /**
-     * 陣列透過foreach轉化為key-value的字串存入陣列中
-     * 回傳此字串陣列供其他方法使用
-     */
+    function q($sql)
+    {
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     protected function a2s($array)
     {
         foreach ($array as $key => $value) {
-            // 如果陣列的key名有id的，則跳過不處理
-            if ($key != 'id') {
-                // 將$key和$value組成SQL語法的字串後加到一個暫存的陣列中
-                $tmp[]="`$key`='$value'";
-            }
+            $tmp[] = "`$key`='$value'";
         }
-        // 回傳暫存的陣列
         return $tmp;
     }
 
-    /**
-     * $sql 一個sql的字串，主要是 where 前的語法
-     * $array sql語句需要的欄位和值
-     * $other sql特殊語句
-     */
-    private function sql_all($sql,$array,$other){
-        // 如果有設定資料表且不為空
-        if(isset($this->table) && !empty($this->table)){
-
-            // 如果參數為陣列
-            if(is_array($array)){
-
-                // 如果陣列不為空
-                if(!empty($array)){
-                    $tmp=$this->a2s($array);
-                    $sql.= " where ".join(" && ", $tmp);
+    private function sql_all($sql, $array, $other)
+    {
+        if (isset($this->table) && !empty($this->table)) {
+            if (is_array($array)) {
+                if (!empty($array)) {
+                    $tmp = $this->a2s($array);
+                    $sql .= " where " . join(" && ", $tmp);
                 }
-            }else{
-                $sql.=" $array";
+            } else {
+                $sql .= " $array";
             }
-            $sql.=$other;
-            // 回傳sql字串
+            $sql .= $other;
             return $sql;
         }
     }
 
-    protected function math($math,$col,$array='',$other=''){
-        $sql="select $math($col) from $this->table ";
-        $sql=$this->sql_all($sql,$array,$other);
-
-        // 因為這類方法只會回傳一個值，所以使用fetchColumn()的方式來回傳
-        return $this->pdo->query($sql)->fetchColumn();
-    }
-
-    /**
-     * 此方法主要用來取得，符合條件的所有資料
-     */
-    function all($where='',$other=''){
-        // 建立一個基礎語法字串
-        $sql="select * from $this->table";
-
-        // 將語法字串及參數帶入到類別內部的sql_all()方法中，結果會得到一個完整的SQL句子
-        $sql=$this->sql_all($sql,$where,$other);
-
-        // 將sql句子帶進pdo的query方法中，並以fetchAll的方式回傳所有的結果
+    function all($where = '', $other = '')
+    {
+        $sql = "select * from `$this->table` ";
+        $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function find($id){
-        // 建立一個基礎語法字串
-        $sql="select * from $this->table ";
-
-        // 如果 $id 是陣列
-        if(is_array($id)){
-            // 執行內部方法a2s
-            $tmp=$this->a2s($id);
-
-            // 拼接sql語句
-            $sql .= " where " . join (" && ",$tmp);
-        }
-        // 如果 $id 是數字
-        else if (is_numeric($id)){
-
-            // 拼接sql語句
-            $sql .= " where `id`"
-        }
+    function count($where = '', $other = '')
+    {
+        $sql = "select count(*) from `$this->table` ";
+        $sql = $this->sql_all($sql, $where, $other);
+        return $this->pdo->query($sql)->fetchColumn();
     }
 
+    private function math($math, $col, $array = '', $other = '')
+    {
+        $sql = "select $math(`$col`) from `$this->table` ";
+        $sql = $this->sql_all($sql, $array, $other);
+        return $this->pdo->query($sql)->fetchColumn();
+    }
+
+    function sum($col = '', $where = '', $other = '')
+    {
+        return $this->math('sum', $col, $where, $other);
+    }
+
+    function max($col, $where = '', $other = '')
+    {
+        return $this->math('max', $col, $where, $other);
+    }
+
+    function min($col, $where = '', $other = '')
+    {
+        return $this->math('min', $col, $where, $other);
+    }
+
+    function find($id)
+    {
+        $sql = "select * from `$this->table` ";
+        if (is_array($id)) {
+            $tmp = $this->a2s($id);
+            $sql .= " where " . join(" && ", $tmp);
+        } else if (is_numeric($id)) {
+            $sql .= " where `id`='$id'";
+        }
+        // fetch一列
+        return $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+    }
+
+    function del($id)
+    {
+        $sql = "delete from `$this->table` ";
+        if (is_array($id)) {
+            $tmp = $this->a2s($id);
+            $sql .= " where " . join(" && ", $tmp);
+        } else if (is_numeric($id)) {
+            $sql .= " where `id`='$id'";
+        }
+        return $this->pdo->exec($sql);
+    }
+
+    function save($array)
+    {
+        if (isset($array['id'])) {
+            $sql = "update `$this->table` set ";
+            if (!empty($array)) {
+                $tmp = $this->a2s($array);
+            }
+            $sql .= join(",", $tmp);
+            $sql .= " where `id`='{$array['id']}'";
+        } else {
+            $sql = "insert into `$this->table` ";
+            $col = "(`" . join("`,`", array_keys($array)) . "`)";
+            $vals = "('" . join("','", $array) . "')";
+            $sql = $sql . $col . " values " . $vals;
+        }
+        return $this->pdo->exec($sql);
+    }
+}
+
+function dd($array)
+{
+    echo "<pre>";
+    print_r($array);
+    echo "</pre>";
+}
+
+function to($url)
+{
+    header("location:$url");
+}
+
+$Total = new DB('total');
+
+if (!isset($_SESSION['visited'])) {
+    if ($Total->count(['date' => date("Y-m-d")]) > 0) {
+        $total = $Total->find(['date' => date("Y-m-d")]);
+        $Total['total']++;
+        $Total->save($total);
+    } else {
+        $Total->save(['total' => 1, 'date' => date("Y-m-d")]);
+    }
+    $_SESSION['visited'] = 1;
 }

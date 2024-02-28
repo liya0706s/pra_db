@@ -143,15 +143,10 @@ function to($url)
 
 $Total = new DB('total');
 
-// 檢查session, 當前的使用者在本次會話，沒有訪問過紀錄
 if (!isset($_SESSION['visited'])) {
-    // 條件是當天日期, 檢查當日紀錄
     if ($Total->count(['date' => date("Y-m-d")]) > 0) {
-        // 當天有被訪問的情況下，取得當天的日期資料
         $total = $Total->find(['date' => date("Y-m-d")]);
-        // 將當日人數total加一
         $total['total']++;
-        // 更新儲存回total資料表
         $Total->save($total);
     } else {
         // 如果沒有當天被訪問的紀錄, 將當天日期的資料數量設定為一
