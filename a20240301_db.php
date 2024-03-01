@@ -105,28 +105,39 @@ class DB
             if (!empty($array)) {
                 $tmp = $this->a2s($array);
             }
-            $sql.=join(",", $tmp);
-            $sql.= " where `id`='{$array['id']}'";
-        }else{
-            $sql="insert into `$this->table` ";
-            $cols="(`". join("`,`", array_keys($array)). "`)";
-            $vals="('".join("','", $array). "')";
-            $sql = $sql. $cols. " values ". $vals;
+            $sql .= join(",", $tmp);
+            $sql .= " where `id`='{$array['id']}'";
+        } else {
+            $sql = "insert into `$this->table` ";
+            $cols = "(`" . join("`,`", array_keys($array)) . "`)";
+            $vals = "('" . join("','", $array) . "')";
+            $sql = $sql . $cols . " values " . $vals;
         }
         return $this->pdo->exec($sql);
     }
 }
 
-function dd($array){
+function dd($array)
+{
     echo "<pre>";
     print_r($array);
     echo "</pre>";
 }
 
-function to($url){
+function to($url)
+{
     header("location:$url");
 }
 
-if(!isset($_SESSION['visited'])){
-    
+$Total = new DB('total');
+
+if (!isset($_SESSION['visited'])) {
+    if ($Total->count(['date' => date("Y-m-d")])) {
+        $total = $Total->find(['date' => date("Y-m-d")]);
+        $total['total']++;
+        $Total->save($total);
+    } else {
+        $Total->find(['date' => date("Y-m-d"), 'total' => 1]);
+    }
+    $_SESSION['user'] = 1;
 }
