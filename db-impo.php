@@ -109,7 +109,7 @@ class DB
         return $this->pdo->exec($sql);
     }
 
-    
+
     function save($array)
     {
         if (isset($array['id'])) {
