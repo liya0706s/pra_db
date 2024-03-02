@@ -104,7 +104,32 @@ class DB
              if(!empty($array)){
                 $tmp= $this->a2s($array);
              }
-             $sql  
+             $sql ="insert into `$this->table` ";
+             $col= "(`". join("`,`", array_keys($array)). "`)";
+             $vals="('".join ("','", $array) . "')";
+             $sql= $sql. $col. " values ". $vals;
         }
+        return $this->pdo->exec($sql);
     }
+}
+
+function dd($array){
+    echo "<pre>";
+    print_r($array);
+    echo "</pre>";
+}
+
+function to($url){
+    header("location:$url");
+}
+
+if(!isset($_SESSION['visited'])){
+    if($Total->count(['date'=>date("Y-m-d")])>0){
+        $total=$Total->find(['date'=>date("Y-m-d")]);
+        $total['total']++;
+        $Total->save($total);
+    }else{
+        $Total->save(['total'=>1, 'date'=>date("Y-m-d")]);
+    }
+    $_SESSION['visited']=1;
 }
