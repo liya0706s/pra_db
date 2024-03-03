@@ -28,20 +28,15 @@ class DB
 
     private function sql_all($sql, $array, $other)
     {
-        // 判斷資料表是否存在且不為空
         if (isset($this->table) && !empty($this->table)) {
-            // 判斷是不是陣列
             if (is_array($array)) {
-                // 是陣列的話且不是空的
                 if (!empty($array)) {
                     $tmp = $this->a2s($array);
                     $sql .= " where " . join(" && ", $tmp);
                 }
             } else {
-                // 不是陣列
                 $sql .= " $array";
             }
-            // 不是陣列是其他的
             $sql .= $other;
             return $sql;
         }
