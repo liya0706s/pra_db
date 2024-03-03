@@ -28,9 +28,10 @@ class DB
     {
         if (isset($this->table) && !empty($this->table)) {
             if (is_array($array)) {
-                $tmp = $this->a2s($array);
-                $sql .= " where " . join(" && ", $tmp);
-            }
+                if (!empty($array)) {
+                    $tmp = $this->a2s($array);
+                    $sql .= " where " . join(" && ", $tmp);
+                }
             } else {
                 $sql .= " $array";
             }
@@ -52,12 +53,13 @@ class DB
         return $this->pdo->query($sql)->fetchColumn();
     }
 
-    private function math($math, $col, $where = '', $other = '')
+    function math($math, $col, $array = '', $other = '')
     {
         $sql = "select $math(`$col`) from `$this->table` ";
-        $sql = $this->sql_all($sql, $where, $other);
+        $sql = $this->sql_all($sql, $array, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
+
     function sum($col = '', $where = '', $other = '')
     {
         return $this->math('sum', $col, $where, $other);
@@ -97,15 +99,16 @@ class DB
     // EX: UPDATE `users` SET name='John',age='30' WHERE `id`='1'
     // EX: INSERT INTO `users` (`name`,`age`) VALUES ('John','30')
  
-    function save($array){
-        if(isset($array['id'])){
+    function save($array) 
+    {
+        if (isset($array['id'])) {
             $sql = "update `$this->table` set ";
-            if(!empty($array)) {
+            if (!empty($array)) {
                 $tmp = $this->a2s($array);
             }
-            $sql.= join(",", $tmp);
-            $sql.= " where `id`='{$array['id']}'";
-        }else{
+            $sql .= join(",", $tmp);
+            $sql .= " where `id`='{$array['id']}'";
+        } else {
             $sql = "insert into `$this->table` ";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
             $vals = "('" . join("','", $array) . "')";
@@ -113,6 +116,7 @@ class DB
         }
         return $this->pdo->exec($sql);
     }
+}
 
     // 1. 先判斷有沒有id
         // 1.1 建立基本的update SQL語句
@@ -125,19 +129,21 @@ class DB
         // 2.2 建立cols 拼接 (`和 `,` 鍵 和 `)
         // 2.3 建立vals拼接 (' 和 ',' 值 和 ')
     // 3. 返回執行sql語句
-}
 
-function dd($array){
+
+function dd($array)
+{
     echo "<pre>";
     print_r($array);
     echo "</pre>";
 }
 
-function to($url){
+function to($url)
+{
     header("location:$url");
 }
 
-$Total= new DB('total');
+$Total = new DB('total');
 
 if (!isset($_SESSION['visited'])) {
     if ($Total->count(['date' => date("Y-m-d")]) > 0) {
