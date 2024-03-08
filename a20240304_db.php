@@ -33,11 +33,12 @@ class DB
                     $tmp = $this->a2s($array);
                     $sql .= " where " . join(" && ", $tmp);
                 }
+            } else {
+                $sql .= " $array";
             }
-            $sql .= " $array";
+            $sql .= $other;
+            return $sql;
         }
-        $sql .= $other;
-        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     function all($where = '', $other = '')
@@ -48,14 +49,14 @@ class DB
     }
     function count($where = '', $other = '')
     {
-        $sql = "select * from `$this->table` ";
+        $sql = "select count(*) from `$this->table` ";
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
 
     private function math($math, $col, $array = '', $other = '')
     {
-        $sql = "select $math(`$col`) from $this->table ";
+        $sql = "select $math(`$col`) from `$this->table` ";
         $sql = $this->sql_all($sql, $array, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
@@ -80,8 +81,8 @@ class DB
         if (is_array($id)) {
             $tmp = $this->a2s($id);
             $sql .= " where " . join(" && ", $tmp);
-        } else {
-            $sql .= " where `id`=''$id";
+        } else if (is_numeric($id)) {
+            $sql .= " where `id`='$id'";
         }
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
@@ -89,30 +90,30 @@ class DB
 
     function del($id)
     {
-        $sql = "delete from `$this->table` ";
+        $sql = "delete from `$this->table` where ";
         if (is_array($id)) {
             $tmp = $this->a2s($id);
-            $sql .= " where " . join(" && ", $tmp);
+            $sql .= join(" && ", $tmp);
         } else if (is_numeric($id)) {
-            $sql .= " where `id`=''$id";
+            $sql .= " `id`='$id'";
         }
         return $this->pdo->exec($sql);
     }
 
     function save($array)
     {
-        if(isset($array['id'])){
-            $sql="update from `$this->table` set ";
-            if(!empty($array)){
-                $tmp= $this->a2s($array);
+        if (isset($array['id'])) {
+            $sql = "update `$this->table` set ";
+            if (!empty($array)) {
+                $tmp = $this->a2s($array);
             }
-            $sql = join(",", $tmp);
+            $sql .= join(",", $tmp);
             $sql .= " where `id`='{$array['id']}'";
-        }else{
-            $sql="insert into `$this->table` ";
-            $cols= "(`". join("`,`", array_keys($array)). "`)";
-            $vals= "('". join("','", $array). "')";
-            $sql = $sql . $cols. " values " . $vals; 
+        } else {
+            $sql = "insert into `$this->table` ";
+            $cols = "(`" . join("`,`", array_keys($array)) . "`)";
+            $vals = "('" . join("','", $array) . "')";
+            $sql = $sql . $cols . " values " . $vals;
         }
         return $this->pdo->exec($sql);
     }
@@ -123,7 +124,6 @@ function dd($array)
     echo "<pre>";
     print_r($array);
     echo "</pre>";
-
 }
 function to($url)
 {
@@ -131,5 +131,15 @@ function to($url)
 }
 
 $Title = new DB('title');
-
-
+$Total = new DB('total');
+// 如果不存在拜訪紀錄....
+if (!isset($_SESSION['visited'])) {
+    if ($Total->count(['date' => date("Y-m-d")]) > 0) {
+        $total = $Total->find(['date' => date("Y-m-d")]);
+        $total['total']++;
+        $Total->save($total);
+    } else {
+        $Total->save(['total' => 1, 'date' => date("Y-m-d")]);
+    }
+    $_SESSION['visited'] = 1;
+}
