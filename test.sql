@@ -4,3 +4,10 @@ CREATE TABLE `db09`.`title` (
     `sh` INT(5) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
+
+CREATE TABLE `db09`.`total` (
+    `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `total` INT NOT NULL,
+    `date` DATE NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
