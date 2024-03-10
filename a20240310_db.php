@@ -28,7 +28,7 @@ class DB
     private function sql_all($sql, $array, $other)
     {
         if (isset($this->table) && !empty($this->table)) {
-            if (isset($array)) {
+            if (is_array($array)) {
                 if (!empty($array)) {
                     $tmp = $this->a2s($array);
                     $sql .= " where " . join(" && ", $tmp);
@@ -54,7 +54,7 @@ class DB
         return $this->pdo->query($sql)->fetchColumn();
     }
 
-    private function math($math, $col = '', $array = '', $other = '')
+    private function math($math, $col, $array = '', $other = '')
     {
         $sql = "select $math(`$col`) from `$this->table` ";
         $sql = $this->sql_all($sql, $array, $other);
@@ -111,7 +111,7 @@ class DB
             $vals = "('" . join("','", $array) . "')";
             $sql = $sql . $cols . " values " . $vals;
         }
-        return $this->pdo->exec($array);
+        return $this->pdo->exec($sql);
     }
 }
 
@@ -132,11 +132,11 @@ $Title = new DB('title');
 
 if (!isset($_SESSION['visited'])) {
     if ($Total->count(['date' => date("Y-m-d")]) > 0) {
-    $total=$Total->find(['date'=>date("Y-m-d")]);
-    $total['total']++;
-    $Total->save($total);
-    }else{
-        $Total->save(['date'=>date("Y-m-d"), 'total'=>1]);
+        $total = $Total->find(['date' => date("Y-m-d")]);
+        $total['total']++;
+        $Total->save($total);
+    } else {
+        $Total->save(['date' => date("Y-m-d"), 'total' => 1]);
     }
-    $_SESSION['visited']=1;
+    $_SESSION['visited'] = 1;
 }
