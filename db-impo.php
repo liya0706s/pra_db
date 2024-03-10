@@ -139,6 +139,7 @@ function to($url)
 
 $Total = new DB('total');
 
+// 計算拜訪者的人數
 if (!isset($_SESSION['visited'])) {
     if ($Total->count(['date' => date("Y-m-d")]) > 0) {
         $total = $Total->find(['date' => date("Y-m-d")]);

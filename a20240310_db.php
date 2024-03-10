@@ -28,13 +28,13 @@ class DB
     private function sql_all($sql, $array, $other)
     {
         if (isset($this->table) && !empty($this->table)) {
-            if (is_array($array)) {
+            if (isset($array)) {
                 if (!empty($array)) {
                     $tmp = $this->a2s($array);
                     $sql .= " where " . join(" && ", $tmp);
                 }
             } else {
-                $sql .= $array;
+                $sql .= " $array";
             }
             $sql .= $other;
             return $sql;
@@ -54,18 +54,16 @@ class DB
         return $this->pdo->query($sql)->fetchColumn();
     }
 
-    private function math($math, $col, $array = '', $other = '')
+    private function math($math, $col = '', $array = '', $other = '')
     {
         $sql = "select $math(`$col`) from `$this->table` ";
         $sql = $this->sql_all($sql, $array, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
-
     function sum($col = '', $where = '', $other = '')
     {
         return $this->math('sum', $col, $where, $other);
     }
-
     function max($col, $where = '', $other = '')
     {
         return $this->math('max', $col, $where, $other);
@@ -74,7 +72,6 @@ class DB
     {
         return $this->math('min', $col, $where, $other);
     }
-
     function find($id)
     {
         $sql = "select * from `$this->table` ";
@@ -84,8 +81,7 @@ class DB
         } else if (is_numeric($id)) {
             $sql .= " where `id`='$id'";
         }
-        $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
-        return $row;
+        return $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
     }
 
     function del($id)
@@ -115,7 +111,7 @@ class DB
             $vals = "('" . join("','", $array) . "')";
             $sql = $sql . $cols . " values " . $vals;
         }
-        return $this->pdo->exec($sql);
+        return $this->pdo->exec($array);
     }
 }
 
@@ -125,23 +121,22 @@ function dd($array)
     print_r($array);
     echo "</pre>";
 }
+
 function to($url)
 {
     header("location:$url");
 }
 
+$Total = new DB('total');
 $Title = new DB('title');
 
-// $Total = new DB('total');
-
-// 如果不存在拜訪紀錄....
-// if (!isset($_SESSION['visited'])) {
-//     if ($Total->count(['date' => date("Y-m-d")]) > 0) {
-//         $total = $Total->find(['date' => date("Y-m-d")]);
-//         $total['total']++;
-//         $Total->save($total);
-//     } else {
-//         $Total->save(['total' => 1, 'date' => date("Y-m-d")]);
-//     }
-//     $_SESSION['visited'] = 1;
-// }
+if (!isset($_SESSION['visited'])) {
+    if ($Total->count(['date' => date("Y-m-d")]) > 0) {
+    $total=$Total->find(['date'=>date("Y-m-d")]);
+    $total['total']++;
+    $Total->save($total);
+    }else{
+        $Total->save(['date'=>date("Y-m-d"), 'total'=>1]);
+    }
+    $_SESSION['visited']=1;
+}
