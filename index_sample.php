@@ -17,7 +17,6 @@ include_once "./a20240304_db.php";
 // $rows=$Title->all(['text'=>'安安']);
 // dd($rows);
 
-
 // select 查詢單筆 
 // 有 private function a2s() 
 // $row=$Title->find(2);

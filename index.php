@@ -11,7 +11,12 @@ include_once "./b20240310_db.php";
 // $title=$Title->count();
 // dd($title);
 
-$title=$Title->sum(['text'=>'還好安安']);
+// $title=$Title->min('id', ['text'=>'還好安安']);
+$title=$Title->sum('sh');
 dd($title);
+
+// $row=$Title->find(2);
+// dd($row);
+
 
 ?>
