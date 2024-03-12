@@ -79,7 +79,7 @@ class DB
     {
         $sql = "select * from `$this->table` ";
         if (is_array($id)) {
-            $tmp = $this->a2s($sql);
+            $tmp = $this->a2s($id);
             $sql .= " where " . join(" && ", $tmp);
         } else if (is_numeric($id)) {
             $sql .= " where `id`='$id'";
