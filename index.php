@@ -22,15 +22,16 @@ include_once "./a20240306_db.php";
 // DELETE 
 // $Title->del(6);
 
-$total=$Total->find(['date'=>date("Y-m-d")]);
-echo date("y年m月d日");
+// $total=$Total->find(['date'=>date("Y-m-d")]);
+// echo date("y年m月d日");
 
 // 總計
 // $sum=$Total->sum('total');
+// $sum=$Title->sum('sh');
 // echo $sum;
 
 // 某日瀏覽總人次
-// $date_total=$Total->find(['date'=>'2024-03-10'])['total'];
-// echo $date_total;
+$date_total=$Total->find(['date'=>'2024-03-10'])['total'];
+echo $date_total;
 
 ?>
