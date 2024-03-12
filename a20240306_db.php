@@ -22,7 +22,7 @@ class DB
     private function a2s($array)
     {
         foreach ($array as $col => $value) {
-            $tmp[] = " `$col`='$value'";
+            $tmp[] = "`$col`='$value'";
         }
         return $tmp;
     }
@@ -33,11 +33,12 @@ class DB
             if (is_array($array)) {
                 $tmp = $this->a2s($array);
                 $sql .= " where " . join(" && ", $tmp);
+            } else {
+                $sql .= " $array";
             }
-            $sql .= " $array";
             $sql .= $other;
+            return $sql;
         }
-        return $sql;
     }
 
     function all($where = '', $other = '')
@@ -104,7 +105,7 @@ class DB
         if (isset($array['id'])) {
             $sql = "update `$this->table` set ";
             if (!empty($array)) {
-                $tmp = $this->a2s($sql);
+                $tmp = $this->a2s($array);
             }
             $sql .= join(",", $tmp);
             $sql .= " where `id`='{$array['id']}'";
@@ -133,13 +134,13 @@ function to($url)
 $Title = new DB('title');
 $Total = new DB('total');
 
-if(!isset($_SESSION['visited'])){
-    if($Total->count(['date'=>date("Y-m-d")])>0){
-        $total=$Total->find(['date'=>date("Y-m-d")]);
+if (!isset($_SESSION['visited'])) {
+    if ($Total->count(['date' => date("Y-m-d")]) > 0) {
+        $total = $Total->find(['date' => date("Y-m-d")]);
         $total['total']++;
         $Total->save($total);
-    }else{
-        $Total->save(['total'=>1, 'date'=>date("Y-m-d")]);
+    } else {
+        $Total->save(['total' => 1, 'date' => date("Y-m-d")]);
     }
-    $_SESSION['visited']=1;
+    $_SESSION['visited'] = 1;
 }
