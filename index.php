@@ -1,8 +1,8 @@
 <?php
-include_once "./a20240311_db.php";
+include_once "./a20240306_db.php";
 
 // CREATE 
-// $Title->save(['text'=>'發生什麼事了?','sh'=>1]);
+$Title->save(['text'=>'發生什麼事了?','sh'=>1]);
 // $Title->save(['text'=>'錢真的是滿好用的，要努力用功，找工作了', 'sh'=>1]);
 // $Title->save(['text'=>'今天要加油把第二題做完!!!!!', 'sh'=>0]);
 
