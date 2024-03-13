@@ -4,7 +4,7 @@ session_start();
 
 class DB
 {
-    protected $dsn = "mysql:host=localhost;charset:utf8;dbname=test";
+    protected $dsn = "mysql:host=localhost;charset=utf8;dbname=db09";
     protected $pdo;
     protected $table;
 
@@ -82,7 +82,7 @@ class DB
             $tmp = $this->a2s($id);
             $sql .= " where " . join(" && ", $tmp);
         } else if (is_numeric($id)) {
-            $sql .= " `id`='$id'";
+            $sql .= " where `id`='$id'";
         }
         $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
