@@ -62,15 +62,15 @@ class DB
 
     function sum($col = '', $where = '', $other = '')
     {
-        $this->math('sum', $col, $where, $other);
+        return $this->math('sum', $col, $where, $other);
     }
     function max($col, $where = '', $other = '')
     {
-        $this->math('max', $col, $where, $other);
+        return $this->math('max', $col, $where, $other);
     }
     function min($col, $where = '', $other = '')
     {
-        $this->math('min', $col, $where, $other);
+        return $this->math('min', $col, $where, $other);
     }
 
     function find($id)
@@ -91,9 +91,9 @@ class DB
         $sql = "delete from `$this->table` where ";
         if (is_array($id)) {
             $tmp = $this->a2s($id);
-            $sql .= " where " . join(" && ", $tmp);
+            $sql .= join(" && ", $tmp);
         } else if (is_numeric($id)) {
-            $sql .= " where `id`='$id'";
+            $sql .= " `id`='$id'";
         }
         return $this->pdo->exec($sql);
     }
@@ -129,16 +129,16 @@ function to($url)
     header("location:$url");
 }
 
-$Totle = new DB('total');
+$Total = new DB('total');
 $Title = new DB('title');
 
-if(!isset($_SESSION['visited'])){
-    if($Total->count(['date'=>date("Y-m-d")])>0){
-        $total=$Total->find(['date'=>date("Y-m-d")]);
+if (!isset($_SESSION['visited'])) {
+    if ($Total->count(['date' => date("Y-m-d")]) > 0) {
+        $total = $Total->find(['date' => date("Y-m-d")]);
         $total['total']++;
         $Total->save($total);
-    }else{
-        $Total->save(['date'=>date("Y-m-d"), 'total'=>1]);
+    } else {
+        $Total->save(['date' => date("Y-m-d"), 'total' => 1]);
     }
-    $_SESSION['visited']=1;
+    $_SESSION['visited'] = 1;
 }
