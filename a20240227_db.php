@@ -96,8 +96,17 @@ class DB
                 $tmp=$this->a2s($array);
             }
             $sql.=join(",", $tmp);
-            $sql.= " where "
+            $sql.= " where `id`='{$array['id']}'";
+        }else{
+            $sql="insert into `$this->table` ";
+            $cols="(`". join("`,`", array_keys($array)). "`)" ;
+            $vals= "('".join("','", $array). "')";
+            $sql= $sql. $cols. " values ". $vals;
         }
     }
 
+}
+
+if(isset($_SESSION['visited'])){
+    if($Total->count())
 }
