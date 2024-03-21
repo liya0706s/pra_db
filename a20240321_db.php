@@ -112,6 +112,7 @@ class DB
             $vals = "('" . join("','", $array) . "')";
             $sql= $sql. $cols. " values " .$vals;
         }
+        return $this->pdo->exec($sql);
     }
 }
 
