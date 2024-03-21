@@ -23,7 +23,12 @@ include_once "./a20240321_db.php";
 // math 
 // $count=$Title->count(['sh'=>1]);
 // dd($count);
-$sum=$Title->sum('sh');
-echo $sum;
+// $sum=$Title->sum('sh');
+// dd($sum);
+
+// 某日瀏覽總人次
+$date=$Total->find(['date'=>'2024-03-20'])['total'];
+echo $date;
+
 
 ?>

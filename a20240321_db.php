@@ -32,9 +32,9 @@ class DB
                 if (!empty($array)) {
                     $tmp = $this->a2s($array);
                     $sql .= " where " . join(" && ", $tmp);
-                } else {
-                    $sql .= " $array";
                 }
+            } else {
+                $sql .= " $array";
             }
             $sql .= $other;
             return $sql;
@@ -61,15 +61,15 @@ class DB
     }
     function sum($col = '', $where = '', $other = '')
     {
-        $sql = $this->math('sum', $col, $where, $other);
+        return $this->math('sum', $col, $where, $other);
     }
     function max($col, $where = '', $other = '')
     {
-        $sql = $this->math('max', $col, $where, $other);
+        return $this->math('max', $col, $where, $other);
     }
     function min($col, $where = '', $other = '')
     {
-        $sql = $this->math('min', $col, $where, $other);
+        return $this->math('min', $col, $where, $other);
     }
 
     function find($id)
@@ -110,7 +110,7 @@ class DB
             $sql = "insert into `$this->table` ";
             $cols = "(`" . join("`,`", array_keys($array)) . "`)";
             $vals = "('" . join("','", $array) . "')";
-            $sql= $sql. $cols. " values " .$vals;
+            $sql = $sql . $cols . " values " . $vals;
         }
         return $this->pdo->exec($sql);
     }
@@ -128,16 +128,16 @@ function to($url)
     header("location:$url");
 }
 
-$Title=new DB('title');
-// $Total=new DB('total');
+$Title = new DB('title');
+$Total = new DB('total');
 
-// if(!isset($_SESSION['visited'])){
-//     if($Total->count(['date'=>date("Y-m-d")])>0){
-//         $total=$Total->find(['date'=>date("Y-m-d")]);
-//         $total['total']++;
-//         $Total->save($total);
-//     }else{
-//         $Total->save(['date'=>date("Y-m-d"), 'total'=>1]);
-//     }
-//     $_SESSION['visited']=1;
-// }
+if (!isset($_SESSION['visited'])) {
+    if ($Total->count(['date' => date("Y-m-d")]) > 0) {
+        $total = $Total->find(['date' => date("Y-m-d")]);
+        $total['total']++;
+        $Total->save($total);
+    } else {
+        $Total->save(['total' => 1,'date' => date("Y-m-d")]);
+    }
+    $_SESSION['visited'] = 1;
+}
