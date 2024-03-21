@@ -9,7 +9,9 @@ include_once "./a20240304_db.php";
 
 // UPDATE 
 // 測試能否編輯 update 進資料庫 (exec)
+// 測試能否新增 insert into 進資料庫 (exec)
 // $Title->save(['text'=>'還好安安', 'sh'=>0]);
+// $Title->save(['id'=>9, 'text'=>'呵呵呵,訂閱YT Premium了', 'sh'=>0]);
 
 // READ 
 // select 查詢顯示所有 多筆
@@ -31,6 +33,18 @@ include_once "./a20240304_db.php";
 // DELETE 
 // del()刪除的是 執行exec進資料庫 
 // $Title->del(6);
+
+// $total=$Total->find(['date'=>date("Y-m-d")]);
+// echo date("y年m月d日");
+
+// 總計
+// $sum=$Total->sum('total');
+// $sum=$Title->sum('sh');
+// echo $sum;
+
+// // 某日瀏覽總人次
+// $date_total=$Total->find(['date'=>'2024-03-12'])['total'];
+// echo $date_total;
 
 
 

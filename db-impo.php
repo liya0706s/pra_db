@@ -140,13 +140,17 @@ function to($url)
 $Total = new DB('total');
 
 // 計算拜訪者的人數
+// 如果尚未設定 $_SESSION['visited'], 則執行以下程式碼
 if (!isset($_SESSION['visited'])) {
+    // 如果今天的日期在資料庫中已存在，則取得該筆資料
     if ($Total->count(['date' => date("Y-m-d")]) > 0) {
         $total = $Total->find(['date' => date("Y-m-d")]);
+        // 將該筆資料的 total 欄位加一
         $total['total']++;
+        // 儲存更新後的資料
         $Total->save($total);
     } else {
-        // 如果沒有當天被訪問的紀錄, 將當天日期的資料數量設定為一
+        // 如果沒有當天被拜訪的紀錄, 將當天日期的資料, 數量設定為一
         $Total->save(['total' => 1, 'date' => date("Y-m-d")]);
     }
     // 設置拜訪的紀錄為1, 標記當前用戶有訪問
