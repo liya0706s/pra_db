@@ -1,5 +1,5 @@
 <?php
-include_once "./a20240313_db.php";
+include_once "./a20240227_db.php";
 
 // CREATE 
 // $Title->save(['text'=>'發生什麼事了?','sh'=>1]);
@@ -28,7 +28,8 @@ include_once "./a20240313_db.php";
 // 總計
 // $sum=$Total->sum('total');
 // $sum=$Title->sum('sh');
-// echo $sum;
+// $count=$Title->count(['sh'=>1]);
+// echo $count;
 
 // // 某日瀏覽總人次
 // $date_total=$Total->find(['date'=>'2024-03-12'])['total'];
