@@ -1,38 +1,11 @@
 <?php
-include_once "./a20240227_db.php";
+include_once "./a20240321_db.php";
 
+// CRUD 
 // CREATE 
-// $Title->save(['text'=>'發生什麼事了?','sh'=>1]);
-// $Title->save(['text'=>'錢真的是滿好用的，要努力用功，找工作了', 'sh'=>1]);
+// insert into不行也沒有錯誤訊息??
+// $Title->save(['text'=>'今天去參加北科就業博覽會???', 'sh'=>1]);
+$Title->save(['id'=>11, 'text'=>'今天天氣真好!']);
 
-// UPDATE 
-// $Title->save(['id'=>9, 'text'=>'呵呵呵,訂閱YT Premium了', 'sh'=>0]);
-// $Title->save(['id'=>4, 'sh'=>0]);
-
-// READ 
-// $title=$Title->all();
-// dd($title);
-// $title=$Title->all();
-
-// READ 
-// find()只會找到條件的第一筆
-// $title=$Title->find('sh');
-// dd($title);
-
-// DELETE 
-// $Title->del(6);
-
-// $total=$Total->find(['date'=>date("Y-m-d")]);
-// echo date("y年m月d日");
-
-// 總計
-// $sum=$Total->sum('total');
-// $sum=$Title->sum('sh');
-// $count=$Title->count(['sh'=>1]);
-// echo $count;
-
-// // 某日瀏覽總人次
-// $date_total=$Total->find(['date'=>'2024-03-12'])['total'];
-// echo $date_total;
 
 ?>
