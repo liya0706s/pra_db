@@ -14,7 +14,7 @@ include_once "./a20240227_db.php";
 // dd($title);
 // $title=$Title->all();
 
-// READ 
+// READ  
 // find()只會找到條件的第一筆
 // $title=$Title->find('sh');
 // dd($title);

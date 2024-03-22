@@ -28,9 +28,11 @@ class DB
     private function sql_all($sql, $array, $other)
     {
         if (isset($this->table) && !empty($this->table)) {
-            if (!empty($array)) {
-                $tmp = $this->a2s($array);
-                $sql .= " where " . join(" && ", $tmp);
+            if (is_array($array)) {
+                if (!empty($array)) {
+                    $tmp = $this->a2s($array);
+                    $sql .= " where " . join(" && ", $tmp);
+                }
             } else {
                 $sql .= " $array";
             }
@@ -79,7 +81,7 @@ class DB
         } else if (is_numeric($id)) {
             $sql .= " where `id`='$id'";
         }
-        $row = $this->pdo->query($sql)->fetchColumn();
+        $row = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
         return $row;
     }
     function del($id)

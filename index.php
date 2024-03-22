@@ -6,9 +6,11 @@ include_once "./a20240322_db.php";
 // CREATE 
 // $Title->save(['text'=>'mp我是誰我是誰我是誰']);
 
-// READ 
+// READ all和find
 // $all=$Title->all();
-// dd($all);
+
+// $array=$Title->find(['id'=>8]);
+// dd($array);
 
 // update 
 // $Title->save(['id'=>22, 'text'=>'penny chiu是天使來著']);
