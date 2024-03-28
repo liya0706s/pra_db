@@ -1,10 +1,10 @@
 <?php
 date_default_timezone_set("Asia/Taipei");
-session_strat();
+session_start();
 
 class DB
 {
-    protected $dsn = "";
+    protected $dsn = "mysql:host=localhost;charset=utf8;dbname=db09";
     protected $pdo;
     protected $table;
 
@@ -15,7 +15,7 @@ class DB
     }
     function q($sql)
     {
-        $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
     private function a2s($array)
     {
@@ -47,7 +47,7 @@ class DB
     }
     function count($where = '', $other = '')
     {
-        $sql = "select count(*) form `$this->table` ";
+        $sql = "select count(*) from `$this->table` ";
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchColumn();
     }
@@ -92,7 +92,7 @@ class DB
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
         } else if (is_numeric($id)) {
-            $sql .= "`id`='$id'";
+            $sql .= " `id`='$id'";
         }
         return $this->pdo->exec($sql);
     }
@@ -100,7 +100,7 @@ class DB
     function save($array)
     {
         if (isset($array['id'])) {
-            $sql = "update $this->table set ";
+            $sql = "update `$this->table` set ";
             if (!empty($array)) {
                 $tmp = $this->a2s($array);
             }
@@ -132,7 +132,7 @@ $Total = new DB('total');
 $Title = new DB('title');
 
 if (!isset($_SESSION['visited'])) {
-    if (($Total->count(['date' => date("Y-m-d")]) > 0)) {
+    if ($Total->count(['date' => date("Y-m-d")]) > 0) {
         $total = $Total->find(['date' => date("Y-m-d")]);
         $total['total']++;
         $Total->save($total);
