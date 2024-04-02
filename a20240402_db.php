@@ -32,7 +32,7 @@ class DB
             if (is_array($array)) {
                 if (!empty($array)) {
                     $tmp = $this->a2s($array);
-                    $sql = " where " . join(" && ", $tmp);
+                    $sql .= " where " . join(" && ", $tmp);
                 }
             } else {
                 $sql .= " $array";
@@ -94,7 +94,7 @@ class DB
             $tmp = $this->a2s($id);
             $sql .= join(" && ", $tmp);
         } else if (is_numeric($id)) {
-            $sql .= "`id`='$id'";
+            $sql .= " `id`='$id'";
         }
         return $this->pdo->exec($sql);
     }
@@ -138,8 +138,8 @@ if (!isset($_SESSION['visited'])) {
         $total = $Total->find(['date' => date("Y-m-d")]);
         $total['total']++;
         $Total->save($total);
-    }else{
-        $Total(['date'=>date("Y-m-d"), 'total'=>1]);
+    } else {
+        $Total->save(['date' => date("Y-m-d"), 'total' => 1]);
     }
-    $_SESSION['visited']=1;
+    $_SESSION['visited'] = 1;
 }
